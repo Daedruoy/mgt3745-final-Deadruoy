@@ -1,4 +1,3 @@
 # DDR Log
 
-| DDR | Date | Task | Tool | Net hours | Verified by | Status |
-|---|---|---|---|---|---|---|
+| DDR-001 | 2026-11-12 | Sourcing audit: ADR-001 draft, web research for the evidence table, scores, rings, exit plans, and the pin, schema, and export steps | Claude (Anthropic) | 2.0 (5.0 by hand, 3.0 delegated including review) | I ran npm view, npm audit, apt-cache, and curl myself, read the Live Server and Markdown Mermaid Marketplace pages and the Node release schedule, and caught two source errors that I corrected. I ran npm test (6 of 6 after the fixes) and the D1 export. The Cloudflare, GitHub, and Copilot limits came from Claude's searches, and I have not re-read the official pages. | Complete |
