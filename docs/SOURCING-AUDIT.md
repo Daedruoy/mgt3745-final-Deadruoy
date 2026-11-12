@@ -8,8 +8,6 @@ I predict that at least 90 percent of the rows in my inventory will land in the 
 
 ### Weights (commit in their own commit, before scoring)
 
-### Weights (commit in their own commit, before scoring)
-
 | Criterion | Weight | Why this weight for this project |
 |-----------|--------|----------------------------------|
 | Stability | 25 | Chair submissions are time-sensitive, so a dependency that breaks or changes behavior between releases costs the chapter trust it cannot easily rebuild. |
