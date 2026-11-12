@@ -4,6 +4,12 @@
   "type": "module",
   "scripts": {
     "test": "node --test \"evals/**/*.test.js\"",
-    "test:proxy": "node --test \"worker/test/*.test.js\""
+    "db:schema": "wrangler d1 execute mgt3745-final-entries --remote --file=schema.sql --config worker/wrangler.toml",
+    "db:export": "wrangler d1 export mgt3745-final-entries --remote --output=backup.sql --config worker/wrangler.toml",
+    "dev": "wrangler dev --config worker/wrangler.toml",
+    "deploy": "wrangler deploy --config worker/wrangler.toml"
+  },
+  "devDependencies": {
+    "wrangler": "^4"
   }
 }
