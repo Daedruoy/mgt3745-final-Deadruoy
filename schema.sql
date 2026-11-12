@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS entries (
   initiative TEXT NOT NULL,
   update_title TEXT NOT NULL,
   event_date TEXT NOT NULL,
-  created_at TEXT DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+  status TEXT NOT NULL DEFAULT 'pending'
 );
