@@ -53,4 +53,5 @@ The API URL is set on line 4 of app.js. The tests POST and PATCH entries, so the
 
 ## AI Use
 
-Claude (Anthropic) is the only AI tool that wrote material for this final-project work. It drafted ADR-001, the sourcing audit tables, the TOOLS.md columns, and this README, and it advised on the wrangler pin, the schema fix, and the database export. I ran every command myself and checked each result against its source. The record is in [docs/DDR-LOG.md](docs/DDR-LOG.md). GitHub Copilot is installed in the dev container and is listed in TOOLS.md. Code carried forward from my HW3 to HW5 homework was built under those assignments' own delegation records, which I did not copy here.
+Claude (Anthropic) drafted much of the code carried forward from HW3 and HW4, the page and the Worker for F-01 and F-02. I validated it, and the delegation records are in my earlier homework repositories, linked from docs/DDR-LOG.md. For this final project, Claude drafted ADR-001, the sourcing audit tables, the TOOLS.md columns, and this README, and it advises on the documentation under DDR-002. F-06 is built by hand, with Copilot disabled, under DDR-003. GitHub Copilot is installed in the dev container and is listed in TOOLS.md.
+I wrote F-07, the chair status update, myself.
