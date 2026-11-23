@@ -38,7 +38,7 @@ Where should entries live now that they must survive a cleared cache?
 | Inspectability | 2 | 4, I read and debugged this Worker myself this week, real earned inspectability, not full mastery | 2, estimated, depends entirely on the vendor's abstraction | 1, honest low score, no experience reading what an AI-hosted builder actually generates or deploys |
 | Switching cost | 2 | 2, scored from Session B experience: moving off localStorage took real hours, new commands, new debugging, a genuine cost | 2, estimated, likely comparable since another migration | 3, estimated, lower switching cost only because nothing has been built there yet, easier to walk away from a decision never made |
 | Fit to spec | 5 | 5, the assignment requires this exact thing, a Worker + D1 built by hand this week, so fit is essentially guaranteed by requirement | 2, estimated, a hosted BaaS wasn't what the assignment specified, would likely require justifying a deviation | 2, estimated, the assignment explicitly frames this week's hand-build as separate from and prerequisite to any Delegate decision |
-| **Weighted total** | | **76** | **45** | **39** |
+| **Weighted total** | | **79** | **47** | **40** |
 
 ## ADR-002: Entries move from localStorage to Cloudflare D1
 
@@ -51,7 +51,7 @@ Nu Mu chapter updates previously lived only in localStorage, tied to one browser
 What crosses: every field a chair submits, chair name, chapter position, initiative, update title, and event or deadline date, leaves the browser and is stored in Cloudflare D1. To which vendor: Cloudflare, under their free-tier terms, in a region not chosen or controlled by me. Under what terms: no cost at this project's scale, governed by Cloudflare's standard terms of service. Who is accountable: I am. I created the database, hold the wrangler login token in this Codespace, and am responsible for what happens to chapter members' submitted data on Cloudflare's infrastructure.
 
 ### Decision
-I will build the backend myself as a Cloudflare Worker backed by D1, rather than use a hosted backend-as-a-service or delegate hosting to an AI builder. This choice is scored in the Gate above: Build won with a real, tested implementation already working (76), well ahead of Buy (45) and Delegate (39), both of which were scored from estimation since I didn't try either this week.
+I will build the backend myself as a Cloudflare Worker backed by D1, rather than use a hosted backend-as-a-service or delegate hosting to an AI builder. This choice is scored in the Gate above: Build won with a real, tested implementation already working (79), well ahead of Buy (47) and Delegate (40), both of which were scored from estimation since I didn't try either this week.
 
 ### Alternatives considered
 Buy (hosted backend-as-a-service): a service like Supabase or Firebase could plausibly host this data with less setup code. I did not try this, so its Cost to start and Time to working scores are estimates, not experience. It scored lower primarily on Fit to spec; this assignment specifically requires a Worker and D1 built by hand this week, so an off-the-shelf service would have required justifying a deviation from the assignment itself.
