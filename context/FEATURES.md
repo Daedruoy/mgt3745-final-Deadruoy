@@ -24,30 +24,39 @@ Non-goals: this does not replace the chapter’s existing group chats, does not 
 | F-06 | Complete-details checklist ensuring time-sensitive releases go out together in the first message | Must-be | General member / INT-01 | Dues messaging went out without deadline or payment info in the first release, causing confusion. |
 | F-07 | Task/status tracker for chair follow-through | Performance | Both segments / INT-02 | Secretary described repeatedly chasing the community service chair; a visible status view would reduce, but not eliminate, this manual follow-up. |
 
-**Selected for HW3/HW4 build: F-01/F-02.**
+**Built: F-01/F-02 (HW3 and HW4) and F-07 (HW5). Selected next: F-06, hand-built for the final project (docs/DDR-003.md).**
 
 ## Behavior
 When a chair has a time-sensitive update, they submit it to the central resource rather than only to casual chat. The system timestamps the entry and surfaces it in a highlighted, current-items view so it isn’t buried once newer messages arrive. If an item nears its deadline without a logged acknowledgment or action from the relevant brothers, the system flags it for a reminder rather than leaving that judgment to the secretary alone. Chairs update their own task status directly, so the secretary or president can check progress without messaging each one individually.
 ## Constraints
-Must run on Notion as a live, continuously updated dashboard, not a static document distributed once and read passively. Must add near-zero extra reporting burden, consistent with the finding that shrinking brother capacity is part of the underlying problem. Must not disclose sensitive personal reasons behind a missed deadline or flag, only that something is outstanding. Must be usable primarily from a phone, since brothers reported checking chats during brief windows in their day, not at a desk.
+Must run as a live, continuously updated page backed by a database, not a static document distributed once and read passively (revised 2026-11-27: the HW1 text named Notion, and the build is a Cloudflare Worker, D1, and a static page, see docs/ADR-001.md). Must add near-zero extra reporting burden, consistent with the finding that shrinking brother capacity is part of the underlying problem. Must not disclose sensitive personal reasons behind a missed deadline or flag, only that something is outstanding. Must be usable primarily from a phone, since brothers reported checking chats during brief windows in their day, not at a desk.
 
 HW3 implementation note: The product scope describes the full Notion dashboard. This week's build implements only F-01/F-02, a chair submits a time-sensitive update through a form, the system logs it with a timestamp and displays it in a current-items view, as three files index.html, styles.css and app.js. Reminder logic (F-03), acknowledgment tracking (F-04), the digest view (F-05), the complete-details checklist (F-06), and chair status tracking (F-07) are out of scope for this week's build.
+Update 2026-11-25: F-07 was built after that note. The PATCH /entries/:id/status endpoint and four page functions are in worker/src/index.js and app.js (HW5 DDR-001, linked from docs/DDR-LOG.md), and its criteria are checked in context/EVALS.md. F-06 is being hand-built for the final project (docs/DDR-003.md). F-03, F-04, and F-05 remain deferred.
 
 ## Acceptance
 
 Keep your dated Kano hypotheses and selected feature. Use IDs to connect evidence, jobs, and criteria. Clearly distinguish the one-feature HW3 implementation from the larger product scope.
 
-- WHEN a chair submits a time-sensitive update, THE SYSTEM SHALL log it to the central resource with a timestamp and surface it in the current-items view.
+- [F-01/F-02-1] WHEN a chair submits a time-sensitive update, THE SYSTEM SHALL log it to the central resource with a timestamp and surface it in the current-items view.
 
-- IF the POST /entries request body is missing a required field (chair name, chair position, initiative, update title, or event date) or the field is empty, THEN THE SYSTEM SHALL reject the submission with a 400 status naming the specific missing field.
+- [F-01/F-02-2] IF the POST /entries request body is missing a required field (chair name, chair position, initiative, update title, or event date) or the field is empty, THEN THE SYSTEM SHALL reject the submission with a 400 status naming the specific missing field.
 
-- IF a logged item nears its deadline without a recorded acknowledgment, THEN THE SYSTEM SHALL flag it for a reminder.
+- [F-01/F-02-3] WHEN a brother views the central resource, THE SYSTEM SHALL display items in the current view based on submission date, not event or deadline date, and WHERE an item was submitted more than two weeks ago, THE SYSTEM SHALL move it to a separate older-updates section rather than hiding it.
 
-- IF a chair updates their task status, THEN THE SYSTEM SHALL reflect that status without requiring the secretary or president to follow up individually.
+- [F-07-1] WHEN a chair marks their own update as completed, THE SYSTEM SHALL update its status and persist the change.
 
-- WHERE acknowledgment tracking is enabled for an item, THE SYSTEM SHALL show who has and has not acknowledged it, without disclosing individual reasons for non-response.
+- [F-07-2] WHEN a brother views the central resource, THE SYSTEM SHALL display each update's status (pending or completed) alongside its other details.
 
-- WHEN a brother views the central resource, THE SYSTEM SHALL display items in the current view based on submission date, not event or deadline date, and WHERE an item was submitted more than two weeks ago, THE SYSTEM SHALL move it to a separate older-updates section rather than hiding it.
+- [F-07-3] IF a chair attempts to mark an update as completed that they did not submit, THEN THE SYSTEM SHALL reject the request with a 403 status.
+
+- [F-07-4] IF the status value is not "pending" or "completed", THEN THE SYSTEM SHALL reject the request with a 400 status.
+
+- [F-07-5] WHEN the status update request reaches the Worker, THE SYSTEM SHALL persist it through a PATCH /entries/:id/status endpoint that binds its parameters with bind(), consistent with STANDARDS.md. This is an implementation constraint, checked by reading the handler.
+
+- [F-03, deferred] IF a logged item nears its deadline without a recorded acknowledgment, THEN THE SYSTEM SHALL flag it for a reminder. "Nears" needs a number before this is built.
+
+- [F-04, deferred] WHERE acknowledgment tracking is enabled for an item, THE SYSTEM SHALL show who has and has not acknowledged it, without disclosing individual reasons for non-response.
 
 ## Verification
 
@@ -58,7 +67,7 @@ Keep your dated Kano hypotheses and selected feature. Use IDs to connect evidenc
 | F-03 (reminder flag) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
 | F-04 (acknowledgment tracking) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
 | F-06 (complete-details checklist) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
-| F-07 (chair status update) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
+| F-07 (chair status update) | Ran npm test against the final Worker. The tests PATCH an entry's status as its own chair and GET it back, PATCH as a different chair, and PATCH with a status that is not pending or completed. | 200 and the changed status on GET. 403 for a different chair. 400 for an invalid status. | The first run on 2026-11-12 failed the first check with a 500, because schema.sql lacked the status column. After commit e29aa2c added it, all 6 tests passed. | PASS | evals/worker.test.js, commits e29aa2c and 6191eed |
 | Survive cleared cache| Posted an entry, then opened the page in an incognito/private browsing window, which starts with no local browser storage. | Entry remains visible in a fresh private window, since data now lives in D1 rather than localStorage. | Entry appeared correctly in the private window. Previously CANNOT TEST YET in HW3, since no server existed yet to test against. | PASS | See docs/HW4Example.gif |
 | POST /entries validation (400 path) | Sent a POST request via curl with an incomplete body: `{"chairName":"Prince"}`, missing the other four required fields. | Server rejects the request with a 400 status and a message naming the specific missing field. | Received `400` response reading "chair position required." Confirms the validation rule that was added, traced to the new EARS statement in Acceptance. | PASS | Terminal output, curl test |
 | Server unreachable | Not run | Page shows an error message instead of breaking silently if the network or server is down. | Would need to simulate a real network failure, like pointing the app at a fake URL. The code already catches this case and shows an error, but I haven't actually triggered and watched it happen. | CANNOT TEST YET | N/A |
