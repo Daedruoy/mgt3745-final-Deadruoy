@@ -1,11 +1,35 @@
 # Context Scaffold Audits
 
-## Audit 1: <YYYY-MM-DD> (before the November 12 check-in)
+## Audit 1: 2026-11-27 (after the November 12 snapshot, not before it)
+
+Dating: this audit ran on 2026-11-27. The brief asks for it before any other change. I carried the HW5 files in on 2026-11-12 and changed files before auditing them, so this audit is late, and four pull requests (#1 to #4) landed first. Their effects are in the table.
+
+Carried forward on 2026-11-12: the HW5 context files over the template stubs (eb1689b), the HW5 page files, schema, and Worker evals (a972d5b), and the move into the final repository layout, which also removed the unused model-proxy test (5ea0c6f). Files unchanged since the template commit of 2026-11-08 are context/AGENTS.md, context/DESIGN.md, and the root AGENTS.md.
+
+Where the findings came from: five came from Copilot Chat running .github/prompts/audit.prompt.md on 2026-11-23 (DDR-005). That run returned findings and not the facts table the prompt asks for, so the dates and vendor names come from git log and grep commands I ran myself. The rest come from reading each file against the others, with Claude's help under DDR-002. The verdicts are mine.
 
 | File | Reader | Last changed | Finding | Verdict | PR |
 |---|---|---|---|---|---|
+| context/PROJECT.md | Me, the instructor, and any agent that needs the problem | 2026-11-23 | Section 0 (reframe, stance, three measures) was added in PR #2. Sections 1 to 6 are HW1 text kept as the record, and the Oath Check and Adequacy Sketch carry dated updates because they named Notion. | Keep | #2 |
+| context/USERS.md | Me and any agent building a feature | 2026-11-12 | Two interviews (INT-01, INT-02), two job statements that cite them, and two profiles that FEATURES.md references, so the references resolve. Only two people are evidenced, and the three observed users arrive in docs/FEEDBACK.md after deployment. The Secretary is one person in a small chapter, so a role label identifies him, and his consent to a role-only entry is not recorded. | Keep | None |
+| context/FEATURES.md | Me, any builder, and the evals | 2026-11-27 | PR #3 marked F-07 built, replaced the loose status row with five precise rows, and revised the Notion constraint. Open: the verification table cites docs/two week test.png and docs/HW4Example.gif, and neither file is in this repository, so two PASS rows point at nothing. The F-06 rows are pending in their own pull request. | Keep | #3, then Pending |
+| context/ARCHITECTURE.md | Me, the instructor, and any agent changing the system | 2026-11-23 | PR #1 corrected the HW4 Gate totals. Two decisions are numbered ADR-001: this file's HW3 one and docs/ADR-001.md, so a reader following either number can land on the wrong decision. The file has no current diagram and no Trust Boundary section, and the crossing statement sits inside the HW4 ADR-002. | Rewrite | #1 (totals), then Pending |
+| context/EVALS.md | Me, the instructor, and anyone running the evals | 2026-11-12 | Carried-forward HW5 file. Its RAT and Stake (2026-09-29) are about delegating F-07 to bolt.new, and none exists for this build. It records the test run as npm test against the HW4 Worker, and repeating that adds test rows to the database the page reads. It links docs/JUDGMENT.md and docs/COMPARISON.md and cites worker.js, and none of those exist in this repository (the Worker is worker/src/index.js). Its carried verification table duplicates FEATURES.md and still says F-07 DEFERRED, which contradicts FEATURES.md after PR #3. | Rewrite | Pending |
+| context/STANDARDS.md | Me and agents, as the normative rules | 2026-11-12 | The status line still says ACTIVE in Module 3. The 11 rules hold. Two lessons from this project are not rules yet: schema.sql drifted from the live database (the status column was missing, found 2026-11-12), and builders wrote to production in HW5. | Keep | Pending |
+| context/CLAUDE.md | Claude Code, on every task | 2026-11-12 | One paragraph restates the STANDARDS.md rules (naming, files, textContent, bind, credentials, failed responses) and says STANDARDS.md wins on conflict, so each rule lives in two places. The line "Leave preview files as previews" is stale. The status line says Module 3. It names only index.html, styles.css, and app.js, not worker/src/index.js, and says nothing about F-06 being hand-built. | Rewrite | Pending |
+| context/AGENTS.md | Copilot and other agents, through the root pointer | 2026-11-08 | Unchanged since the template commit. It says npx wrangler dev, which fails from the repository root because the config is worker/wrangler.toml, and the working command is npm run dev. It says npm test, which fails without API set (my first run in this repository on 2026-11-12). It mentions builds/, which does not exist here. | Rewrite | Pending |
+| AGENTS.md (root) | Agents that read the repository root | 2026-11-08 | A five-line pointer to context/AGENTS.md, as the brief asks. It repeats "Run the evals with: npm test", which needs the same API fix. | Keep | None |
+| context/DESIGN.md | Copilot, through .github/copilot-instructions.md | 2026-11-08 | Unchanged template: the accent, warning, font, and radius tokens are still placeholders. Its two filled values (ink #1F2933, paper #FFFFFF) differ from STYLE.md (text #0D0D0D, background #F7F1DE), so an agent following the pointer gets placeholders and conflicting colors. | Merge (STYLE.md's tokens into DESIGN.md) | Pending |
+| context/STYLE.md | Me and agents building the page | 2026-11-12 | The tokens and rationale are real and match the fraternity's colors. The two template comment lines at the top are stale ("Guess the hex; precision is HW5's problem"), the token block has no opening --- line, and the tokens conflict with DESIGN.md. | Keep, with its tokens moved to DESIGN.md | Pending |
+| context/SKILLS.md | Agents, read on demand | 2026-11-12 | Four short entries, each under 15 lines, all from HW5 evidence. They say "this week" with no date, and they cite worker.js and not worker/src/index.js. | Keep | Pending |
+| context/TOOLS.md | Me, agents, and the instructor | 2026-11-12 | One row per dependency, with the columns the HW7 brief asked for. There is no row for Claude, although repository text is pasted into a chat under DDR-002, and none for GitHub Pages, which arrives at deployment. | Keep | Pending |
 
 ### Changes made
-- 
+- PR #1: corrected the HW4 Gate totals in context/ARCHITECTURE.md and docs/ADR-001.md (79, 47, and 40) and replaced one unsourced AI Studio sentence in docs/ADR-001.md. Found by the Copilot run (DDR-005) and confirmed by hand.
+- PR #2: added the reframe, stance, and three success measures to context/PROJECT.md.
+- PR #3: marked F-07 built, replaced the loose status row in context/FEATURES.md with five precise rows, and revised the Notion constraint.
+- PR #4: corrected a process claim in docs/DDR-004.md, found by the same Copilot run.
+- Pending, one branch and pull request each: context/EVALS.md; context/AGENTS.md and the root AGENTS.md; context/CLAUDE.md; context/DESIGN.md and context/STYLE.md; context/ARCHITECTURE.md; context/STANDARDS.md, context/SKILLS.md, and context/TOOLS.md; and the two missing evidence files in context/FEATURES.md.
+
 
 ## Audit 2: <YYYY-MM-DD> (final-iteration window, December 9 to 14)
