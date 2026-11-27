@@ -58,6 +58,32 @@ Keep your dated Kano hypotheses and selected feature. Use IDs to connect evidenc
 
 - [F-04, deferred] WHERE acknowledgment tracking is enabled for an item, THE SYSTEM SHALL show who has and has not acknowledged it, without disclosing individual reasons for non-response.
 
+### F-06: complete-details check (final project, hand-built, docs/DDR-003.md)
+
+A complete update depends on its type. Each type needs the five fields every update already has (chair name, chair position, initiative, update title, event or deadline date) plus these:
+
+| Update type | `updateType` value | Extra required fields (JSON names) |
+|---|---|---|
+| Practice or event | `event` | `startTime`, `location` |
+| Dues | `dues` | `amount`, `paymentMethod` |
+| Attire | `attire` | `attireDetails` |
+
+The extra fields come from INT-01's incidents: a practice time shared with an hour's notice, a dues message sent without payment details or a deadline, and follow-up on photoshoot attire. The existing event or deadline date serves as the dues deadline.
+
+- [F-06-1] WHEN a chair selects an update type, THE SYSTEM SHALL show the extra fields that type requires and mark them required.
+
+- [F-06-2] IF a submission has no update type or lacks a field its type requires, or that field is empty after trimming whitespace, THEN THE SYSTEM SHALL reject it with a 400 status naming the missing field and SHALL store nothing.
+
+- [F-06-3] IF the update type is not event, dues, or attire, THEN THE SYSTEM SHALL reject the submission with a 400 status naming the type field.
+
+- [F-06-4] IF the event or deadline date is not a real calendar date in YYYY-MM-DD form, THEN THE SYSTEM SHALL reject the submission with a 400 status naming the date field.
+
+- [F-06-5] IF a submission is rejected, THEN THE SYSTEM SHALL keep everything the chair typed in the form and show the message that names the field.
+
+- [F-06-6] WHEN a submission passes every check, THE SYSTEM SHALL store it with its type and extra fields and show those fields with the update in the current-items view.
+
+- [F-06-7] WHERE an entry was stored before F-06 and has no type, THE SYSTEM SHALL display it without extra fields and SHALL NOT mark it incomplete.
+
 ## Verification
 
 | Criterion | Steps and input | Expected result | Observed result | Status | Evidence / commit |
@@ -66,7 +92,7 @@ Keep your dated Kano hypotheses and selected feature. Use IDs to connect evidenc
 | F-01/F-02 (two-week display) | Used `npx wrangler d1 execute` to directly edit one entry's `created_at` in D1 to 2026-09-01, more than two weeks before the other entries' actual submission dates (2026-09-23), then reloaded the page. | The backdated entry moves to a separate Older updates section; the four entries submitted on 9/23 remain in Current updates. | The backdated entry ("First crossing test") correctly appeared under Older updates, while all four 9/23 entries stayed under Current updates. | PASS | See docs/two week test.png |
 | F-03 (reminder flag) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
 | F-04 (acknowledgment tracking) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
-| F-06 (complete-details checklist) | N/A this week | N/A | N/A | DEFERRED | Deferred per Scope, see ADR-001 |
+| F-06 (complete-details check) | Not yet run. The evals are written before the code (docs/DDR-003.md). | See F-06-1 to F-06-7 in Acceptance. | Not yet run. | IN PROGRESS | docs/DDR-003.md |
 | F-07 (chair status update) | Ran npm test against the final Worker. The tests PATCH an entry's status as its own chair and GET it back, PATCH as a different chair, and PATCH with a status that is not pending or completed. | 200 and the changed status on GET. 403 for a different chair. 400 for an invalid status. | The first run on 2026-11-12 failed the first check with a 500, because schema.sql lacked the status column. After commit e29aa2c added it, all 6 tests passed. | PASS | evals/worker.test.js, commits e29aa2c and 6191eed |
 | Survive cleared cache| Posted an entry, then opened the page in an incognito/private browsing window, which starts with no local browser storage. | Entry remains visible in a fresh private window, since data now lives in D1 rather than localStorage. | Entry appeared correctly in the private window. Previously CANNOT TEST YET in HW3, since no server existed yet to test against. | PASS | See docs/HW4Example.gif |
 | POST /entries validation (400 path) | Sent a POST request via curl with an incomplete body: `{"chairName":"Prince"}`, missing the other four required fields. | Server rejects the request with a 400 status and a message naming the specific missing field. | Received `400` response reading "chair position required." Confirms the validation rule that was added, traced to the new EARS statement in Acceptance. | PASS | Terminal output, curl test |
