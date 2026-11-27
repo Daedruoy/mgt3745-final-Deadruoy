@@ -4,6 +4,23 @@ Status: reorganized on 2026-11-27 (Audit 1, docs/AUDIT.md). The final-project se
 
 ## Final project
 
+### RAT statement
+
+Dating: written 2026-11-27, after F-01/F-02 and F-07 were built in HW3 to HW5 and before any F-06 code. It predicts F-06 and how the deployed page gets used, not the carried-forward build. The commit that adds this section is its timestamp.
+
+The riskiest assumption is that a chair will use the form, with the required fields for the update's type, instead of posting in the group chat when they are short on time. If chairs skip it, no brother finds an update in one official place, and the problem in context/PROJECT.md is untouched, however well the code passes its evals. F-02, the chapter practice that updates go through the official channel, is not code, so no test can check it. The assumption is refuted if an observed chair says they would post in the chat instead, or if the median time to post a complete update is over 2 minutes, the guardrail in context/PROJECT.md.
+
+### Prediction Stake
+
+Committed with the RAT, before any F-06 code. Each prediction resolves after the three observed sessions, with counts and not percentages, since n is 3.
+
+- **Tight:** The median time for a chair to post one complete update of each type (three posts) is 2 minutes or less.
+  - Resolution: not yet resolved. Measured with a stopwatch in the chair's observed session.
+- **Loose:** At least 2 of the 3 observed users answer "very disappointed" to "How would you feel if you could no longer use this?"
+  - Resolution: not yet resolved. Answers are recorded in docs/FEEDBACK.md.
+- **Open:** At least one observed user tries to post an update that fits none of the three types (event, dues, or attire).
+  - Resolution: not yet resolved. Noted by the observer during each session.
+
 ### Success criteria
 
 How each F-06 and F-07 row is checked. "Test" means a case in evals/worker.test.js. "Judgment" means a page behavior graded by two graders, me and the graduated brother named in docs/DDR-002.md, with their agreement counted. "Human" means read by hand. The F-06 test cases are written before the F-06 code (docs/DDR-003.md). The rows themselves are in context/FEATURES.md.
